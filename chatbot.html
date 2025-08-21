@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AnemiaDetectpro Assistant</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+        body { font-family: 'Inter', sans-serif; }
+    </style>
+</head>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen p-4 md:p-8">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-4xl h-[90vh] flex flex-col overflow-hidden">
+        <!-- Header -->
+        <header class="bg-blue-600 text-white p-4 flex items-center justify-between shadow-md">
+            <h1 class="text-2xl font-bold">AnemiaDetectpro Assistant</h1>
+            <a href="{{ url_for('new_chat') }}" class="flex items-center text-sm font-medium hover:text-blue-200 transition-colors">
+                <i class="fa-solid fa-plus-circle mr-2"></i> New Chat
+            </a>
+        </header>
+
+        <!-- Chat messages container -->
+        <div id="chat-box" class="flex-grow p-4 md:p-6 overflow-y-auto space-y-6">
+            {% for message in messages %}
+                <div class="flex {% if message.role == 'user' %}justify-end{% else %}justify-start{% endif %}">
+                    <div class="max-w-[75%] md:max-w-[60%] flex items-start">
+                        {% if message.role == 'assistant' %}
+                            <div class="flex-shrink-0 w-8 h-8 md:w-10 md:h-10 rounded-full bg-blue-500 flex items-center justify-center text-white mr-3">
+                                <i class="fa-solid fa-stethoscope"></i>
+                            </div>
+                        {% endif %}
+                        <div class="p-4 rounded-xl {% if message.role == 'user' %}bg-blue-500 text-white rounded-br-none{% else %}bg-gray-200 text-gray-800 rounded-bl-none{% endif %} shadow-md">
+                            <div class="text-sm md:text-base">
+                                <p class="text-sm md:text-base">{{ message.content | markdown | safe }}</p>
+                            </div>
+                        </div>
+                        {% if message.role == 'user' %}
+                            <div class="flex-shrink-0 w-8 h-8 md:w-10 md:h-10 rounded-full bg-gray-400 flex items-center justify-center text-white ml-3">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Chat input form -->
+        <div class="p-4 md:p-6 bg-gray-50 border-t border-gray-200 flex flex-col md:flex-row items-center">
+            <form action="{{ url_for('chatbot') }}" method="POST" class="flex-grow w-full flex items-center space-x-3">
+                <input type="text" name="user_prompt" class="flex-grow rounded-full py-3 px-6 text-gray-700 bg-gray-100 border border-gray-300 focus:outline-none focus:border-blue-500 transition-colors" placeholder="Type your message...">
+                <button type="submit" class="bg-blue-600 text-white p-3 rounded-full hover:bg-blue-700 transition-colors shadow-lg focus:outline-none">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
